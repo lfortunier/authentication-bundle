@@ -7,12 +7,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Basic methods to implements Symfony\Component\Security\Core\User\UserInterface
+ * Basic methods to implements Symfony\Component\Security\Core\User\UserInterface.
  *
  * @author Nicolas Bastien <nicolas.bastien@smartbooster.io>
  */
 trait UserTrait
 {
+    /**
+     * @var int
+     */
+    protected $id;
+
     /**
      * @var string
      *
@@ -31,7 +36,7 @@ trait UserTrait
     private $password;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $plainPassword;
 
@@ -68,7 +73,7 @@ trait UserTrait
      */
     public function __toString()
     {
-        if (strlen(trim($this->getFullName())) > 0) {
+        if (\strlen(trim($this->getFullName())) > 0) {
             return (string) $this->getFullName();
         }
 
@@ -76,12 +81,13 @@ trait UserTrait
     }
 
     /**
-     * On list we want to be able to sort by Lastname
+     * On list we want to be able to sort by Lastname.
+     *
      * @return string
      */
     public function getListDisplay()
     {
-        if (strlen(trim($this->getLastName())) > 0) {
+        if (\strlen(trim($this->getLastName())) > 0) {
             return (string) $this->getListFullName();
         }
 
@@ -97,17 +103,17 @@ trait UserTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->email;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -125,9 +131,9 @@ trait UserTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -145,7 +151,7 @@ trait UserTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getSalt()
     {
@@ -173,17 +179,15 @@ trait UserTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         $this->plainPassword = null;
-
-        return;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRoles()
     {
@@ -191,8 +195,6 @@ trait UserTrait
     }
 
     /**
-     * @param array $roles
-     *
      * @return $this
      */
     public function setRoles(array $roles = [])
@@ -247,7 +249,7 @@ trait UserTrait
      */
     public function getFullName()
     {
-        return sprintf('%s %s', (string)$this->getFirstName(), (string)$this->getLastName());
+        return sprintf('%s %s', (string) $this->getFirstName(), (string) $this->getLastName());
     }
 
     /**
@@ -255,7 +257,7 @@ trait UserTrait
      */
     public function getListFullName()
     {
-        return sprintf('%s %s', (string)$this->getLastName(), (string)$this->getFirstName());
+        return sprintf('%s %s', (string) $this->getLastName(), (string) $this->getFirstName());
     }
 
     /**
@@ -263,7 +265,7 @@ trait UserTrait
      */
     public function getFullNameAndEmail()
     {
-        if (strlen(trim($this->getFullName())) > 0) {
+        if (\strlen(trim($this->getFullName())) > 0) {
             return sprintf('%s - %s', $this->getFullName(), $this->getEmail());
         }
 
@@ -275,19 +277,21 @@ trait UserTrait
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->id,
             $this->email,
             $this->password,
-        ));
+        ]);
     }
 
     /**
      * @see \Serializable::unserialize()
+     *
+     * @param mixed $serialized
      */
     public function unserialize($serialized)
     {
-        list (
+        list(
             $this->id,
             $this->email,
             $this->password,
@@ -297,7 +301,7 @@ trait UserTrait
     }
 
     /**
-     * @return null|DateTime
+     * @return DateTime|null
      */
     public function getLastLogin()
     {
@@ -305,7 +309,7 @@ trait UserTrait
     }
 
     /**
-     * @param null|DateTime $lastLogin
+     * @param DateTime|null $lastLogin
      *
      * @return $this
      */

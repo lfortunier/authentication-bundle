@@ -1,3 +1,7 @@
+# ====================
+# Development
+ssh:
+	docker run --rm -it --user=dev -v $(PWD):/var/www smartbooster/php-fpm:builder bash
 
 # ====================
 # Qualimetry rules
@@ -5,9 +9,10 @@
 qa: qualimetry
 qualimetry: checkstyle lint.php composer.validate phpstan metrics
 
+# https://cs.symfony.com/
 cs: checkstyle
 checkstyle:
-	vendor/bin/phpcs --extensions=php -n --standard=PSR12 --report=full src tests
+	php-cs-fixer fix --dry-run --format checkstyle
 
 lint.php:
 	find src -type f -name "*.php" -exec php -l {} \;
@@ -26,7 +31,7 @@ metrics:
 	vendor/bin/phpmetrics --report-html=build/phpmetrics.html src
 
 phpstan:
-	vendor/bin/phpstan analyse src --level=6 -c phpstan.neon
+	vendor/bin/phpstan analyse -c phpstan.neon
 
 #================================
 #           TEST

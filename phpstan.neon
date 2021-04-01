@@ -1,3 +1,10 @@
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
     - vendor/phpstan/phpstan-symfony/rules.neon
+
+parameters:
+    checkMissingIterableValueType: false
+    level: 6
+    paths:
+        - src
+        - tests
